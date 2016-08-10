@@ -9,6 +9,16 @@ router.get('/', function(req, res, next) {
     if (err) throw err;
     res.render('index', { 'data': data });
   });
+
+  //Add a random account
+  /*var spoof = {
+    to: 'henry',
+    from: 'angus',
+    amount: 100
+  };
+
+  var newRow = new Transaction(spoof);
+  newRow.save();*/
 });
 
 /* Save or update data */
@@ -34,9 +44,10 @@ router.post('/', function(req, res) {
     var query = { '_id': val };
     Transaction.findOneAndUpdate(query, entry, {upsert: true}, function(err, doc) {
       if (err) return res.send(500, { error: err });
-    })
+    });
   });
 
+  //Fetch all data and render page
   Transaction.find({}, function(err, data) {
     if (err) throw err;
     res.render('index', { 'data': data });
