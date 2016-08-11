@@ -1,19 +1,38 @@
 {
-  "name": "debt_simplifier",
-  "version": "0.0.0",
+  "name": "debt-tracker",
+  "version": "1.0.0",
   "private": true,
-  "scripts": {
-    "start": "./bin/www"
-  },
+  "description": "",
+  "main": "app.js",
   "dependencies": {
     "body-parser": "~1.15.1",
-    "connect-flash": "^0.1.1",
+    "bootstrap-select": "^1.10.0",
+    "bootstrap": "^3.3.7",
     "cookie-parser": "~1.4.3",
+    "connect-flash": "^0.1.1",
     "debug": "~2.2.0",
     "express": "~4.13.4",
+    "express-handlebars": "^3.0.0",
     "express-session": "^1.14.0",
-    "jade": "~1.11.0",
+    "jquery": "^3.1.0",
+    "mongodb": "^2.2.5",
+    "mongoose": "^4.5.8",
     "morgan": "~1.7.0",
     "serve-favicon": "~2.3.0"
-  }
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "./bin/www",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/angusturner/debt-tracker.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/angusturner/debt-tracker/issues"
+  },
+  "homepage": "https://github.com/angusturner/debt-tracker#readme"
 }

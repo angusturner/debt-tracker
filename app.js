@@ -25,7 +25,8 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.engine('handlebars', exphbs({
   defaultLayout:'layout',
-  helpers: require("./public/js/helpers.js").helpers, // define additional helper functions
+  helpers: require("./public/js/helpers.js").helpers // define additional helper functions
+}));
 app.set('view engine', 'handlebars');
 
 // uncomment after placing your favicon in /public
