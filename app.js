@@ -10,6 +10,7 @@ var exphbs = require('express-handlebars');
 var flash = require('connect-flash');
 var session = require('express-session');
 
+
 //Database
 mongoose.connect('mongodb://localhost/debt');
 var db = mongoose.connection;
@@ -22,7 +23,9 @@ var app = express();
 
 // Handlebars view engine
 app.set('views', path.join(__dirname, 'views'));
-app.engine('handlebars', exphbs({defaultLayout:'layout'}));
+app.engine('handlebars', exphbs({
+  defaultLayout:'layout',
+  helpers: require("./public/js/helpers.js").helpers, // define additional helper functions
 app.set('view engine', 'handlebars');
 
 // uncomment after placing your favicon in /public
@@ -37,6 +40,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/js', express.static(__dirname + '/node_modules/bootstrap/dist/js')); // redirect bootstrap JS
 app.use('/js', express.static(__dirname + '/node_modules/jquery/dist')); // redirect JS jQuery
 app.use('/css', express.static(__dirname + '/node_modules/bootstrap/dist/css')); // redirect CSS bootstrap
+app.use('/css', express.static(__dirname + '/node_modules/bootstrap-select/dist/css')); //bootstrap select css
+app.use('/js', express.static(__dirname + '/node_modules/bootstrap-select/dist/js')); //bootstrap-select js
 
 //Routes
 app.use('/', routes);

@@ -54,7 +54,7 @@ Transaction.upsert = function(entry) {
         .catch((err) => reject(err));
     } else {
       let query = { '_id': entry.id };
-      Transaction.findOneAndUpdate(query, entry, { upsert: true })
+      var result = Transaction.findOneAndUpdate(query, entry, { upsert: true })
         .then(resolve)
         .catch((err) => reject(err));
     }

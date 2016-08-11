@@ -6,35 +6,29 @@ var Transaction = require('../models/transaction.js');
 router.get('/', function(req, res, next) {
   //Fetch all data and render page
   Transaction.getAll(function(data) {
-    res.render('index', { 'data': data, 'users': ['angus', 'rhys', 'henry'] });
+    res.render('index', {
+      'data': data,
+      'users': ['angus', 'rhys', 'henry']
+    });
   });
-
-  //Add a random account
-  /*var spoof = {
-    to: 'henry',
-    from: 'angus',
-    amount: 100
-  };
-
-  var newRow = new Transaction(spoof);
-  newRow.save();*/
 });
 
 /* Save or update data */
 router.post('/', function(req, res) {
   //Fetch post variables
-  var id = req.body.id;
-  var creditor = req.body.to;
-  var debtor = req.body.from;
-  var amount = req.body.amount;
+  var data = {};
+  ['id', 'to', 'from', 'amount'].forEach((val) => {
+      data[val] = req.body[val];
+      data[val].shift(); //discard first entry (template row)
+  });
 
-  //Retrieve an array of 'upsert' promises
-  var requests = id.map((val, i) => {
+  //Create an array of 'upsert' promises
+  var requests = data.id.map((val, i) => {
     return Transaction.upsert({
         id: val,
-        to: creditor[i],
-        from: debtor[i],
-        amount: amount[i]
+        to: data.to[i],
+        from: data.from[i],
+        amount: data.amount[i]
     });
   });
 

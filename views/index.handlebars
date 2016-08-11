@@ -1,4 +1,3 @@
-<!-- ASDF -->
 <div class='col-lg-6 col-md-8 col-sm-10 col-xs-12'>
   <form class='form' action='/' method='post'>
     <table class='table'>
@@ -11,29 +10,51 @@
         </tr>
       </thead>
       <tbody>
+        <!-- Template row for duplicating -->
+        <tr id='template' style='display: none;'>
+          <input type='hidden' name='id[]' value=''>
+          <td>
+            <select name='to[]'>
+              {{#each users}}
+                <option value='{{this}}'>{{this}}</option>
+              {{/each}}
+            </select>
+          </td>
+          <td>
+            <select name='from[]'>
+              {{#each users}}
+                <option value='{{this}}'>{{this}}</option>
+              {{/each}}
+            </select>
+          </td>
+          <td><input class='form-control' type='text' name='amount[]' value='0'></td>
+          <td><button type='button' class='btn btn-danger'>X</button></td>
+        </tr>
+
+        <!-- Dynamic rows -->
         {{#data}}
           <tr>
             <input type='hidden' name='id[]' value='{{id}}'>
-            <!--<td><input class='form-control' type='text' name='to[]' value='{{to}}'></td>
-            <td><input class='form-control' type='text' name='from[]' value='{{from}}'></td>-->
             <td>
-              <select class='select' name='to[]'>
-                {{#each users}}
+              <select class='selectpicker' name='to[]'>
+                {{#select to}}
+                {{#each ../users}}
                   <option value='{{this}}'>{{this}}</option>
-                {{else}}
-                  <option value='none'>none</option>
                 {{/each}}
+                {{/select}}
               </select>
             </td>
             <td>
-              <select class='select' name='from[]'>
-                {{#each users}}
+              <select class='selectpicker' name='from[]'>
+                {{#select from}}
+                {{#each ../users}}
                   <option value='{{this}}'>{{this}}</option>
                 {{/each}}
+                {{/select}}
               </select>
             </td>
             <td><input class='form-control' type='text' name='amount[]' value='{{amount}}'></td>
-            <td><button type='button' class='btn btn-danger'>X</button></td>
+            <td><button type='button' class='btn btn-danger delete'>X</button></td>
           </tr>
         {{/data}}
       </tbody>
@@ -48,13 +69,23 @@
 
 <!-- Add / Delete Row Javascript -->
 <script type='text/javascript'>
+
   $(document).ready(function() {
     //Add row function
     $('#addRow').on('click', function() {
-      var copy = $('tr:last').html();
+      var copy = $('#template').html();
       $('.table').append('<tr></tr>');
       $('tr:last').html(copy);
-      $('tr:last').find('input').val('');
+      $('tr:last').find('select').attr('class', 'selectpicker');
+      $('.selectpicker').selectpicker('refresh');
     });
+
+    //Delete row function
+    $('.delete').on('click', function() {
+      $(this).parent().parent().remove();
+    });
+
+    //Activate selectpickers
+    $('.selectpicker').selectpicker();
   });
 </script>
