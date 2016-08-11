@@ -1,6 +1,10 @@
 //
 var mongoose = require('mongoose');
 
+//use native promises for mongoose
+mongoose.Promise = global.Promise;
+//assert.equal(query.exec().constructor, global.Promise);
+
 //Table schema
 var transactionSchema = mongoose.Schema({
   to: {
@@ -22,7 +26,7 @@ var transactionSchema = mongoose.Schema({
   }
 });
 
-//On save update the update_at field, and created_at field if it isn't set
+//On save operations, set the update_at and created_at fields
 transactionSchema.pre('save', function(next) {
   var currentDate = new Date();
   this.updated_at = currentDate;
@@ -32,17 +36,46 @@ transactionSchema.pre('save', function(next) {
   next();
 });
 
-//Create model with the schema
+//Create mongoose model
 var Transaction = mongoose.model('Transaction', transactionSchema);
 
-//Add a createTransaction method
-Transaction.createTransaction = function(newTransaction, callback) {
-  //
+/**
+ * Create or insert a row depending whether it exists
+ * @param  {object} entry Document to insert or modify
+ * @return {Promise}
+ */
+Transaction.upsert = function(entry) {
+  return new Promise((resolve, reject) => {
+    if (entry.id == '') {
+      delete entry.id;
+      let newRow = new Transaction(entry);
+      newRow.save()
+        .then(resolve)
+        .catch((err) => reject(err));
+    } else {
+      let query = { '_id': entry.id };
+      Transaction.findOneAndUpdate(query, entry, { upsert: true })
+        .then(resolve)
+        .catch((err) => reject(err));
+    }
+  });
 };
 
-//Add a fetch transaction method
+/**
+ * Get all documents from transaction database
+ * @param  {Function} callback [description]
+ * @return {[type]}            [description]
+ */
 Transaction.getAll = function(callback) {
-  console.log('test');
+  Transaction.find({}, function(err, data) {
+    if (err) throw err;
+    callback(data);
+  });
 };
+
+//Validation functions
+function isNumeric(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+}
 
 module.exports = Transaction;
