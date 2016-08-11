@@ -54,7 +54,7 @@
               </select>
             </td>
             <td><input class='form-control' type='text' name='amount[]' value='{{amount}}'></td>
-            <td><button type='button' class='btn btn-danger delete'>X</button></td>
+            <td><button type='button' class='btn btn-danger delete' data-id='{{id}}'>X</button></td>
           </tr>
         {{/data}}
       </tbody>
@@ -74,7 +74,7 @@
     //Add row function
     $('#addRow').on('click', function() {
       var copy = $('#template').html();
-      $('.table').append('<tr></tr>');
+      $('tbody').append('<tr></tr>');
       $('tr:last').html(copy);
       $('tr:last').find('select').attr('class', 'selectpicker');
       $('.selectpicker').selectpicker('refresh');
@@ -82,7 +82,8 @@
 
     //Delete row function
     $('.delete').on('click', function() {
-      $(this).parent().parent().remove();
+      var rowId = $(this).data('id');
+      console.log(rowId);
     });
 
     //Activate selectpickers
