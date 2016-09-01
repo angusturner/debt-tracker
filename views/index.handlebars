@@ -1,12 +1,19 @@
-<div class='col-lg-6 col-md-8 col-sm-10 col-xs-12'>
-  <form class='form' action='/' method='post'>
-    <table class='table'>
+
+<ul class="tabs">
+  <li class="tab col s3"><a class='active' href="#log">Log</a></li>
+  <li class="tab col s3"><a href="#simple">Totals</a></li>
+</ul>
+
+<!--<div id="log" class="col s12">-->
+<form id='log' class='form' action='/' method='post'>
+    <table class='highlight content centered'>
       <thead>
         <tr>
-          <td>To</td>
-          <td>From</td>
-          <td>Amount</td>
-          <td></td>
+          <th>To</th>
+          <th>From</th>
+          <th>Item</th>
+          <th>$$</th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
@@ -14,21 +21,38 @@
         <tr id='template' style='display: none;'>
           <input type='hidden' name='id[]' value=''>
           <td>
-            <select name='to[]'>
+            <div class='input-field'>
+              <select name='to[]'>
               {{#each users}}
                 <option value='{{this}}'>{{this}}</option>
               {{/each}}
-            </select>
+              </select>
+            </div>
           </td>
           <td>
-            <select name='from[]'>
+            <div class='input-field'>
+              <select name='from[]'>
               {{#each users}}
                 <option value='{{this}}'>{{this}}</option>
               {{/each}}
-            </select>
+              </select>
+            </div>
           </td>
-          <td><input class='form-control' type='text' name='amount[]' value='0'></td>
-          <td><button type='button' class='btn btn-danger'>X</button></td>
+          <td>
+            <div class='input-field'>
+              <input type='text' class='validate' name='item[]' placeholder='desc.'>
+            </div>
+          </td>
+          <td>
+            <div class='input-field'>
+              <input type='number' step='0.05' class='validate' name='amount[]' value='0'>
+            </div>
+          </td>
+          <td>
+            <button type='button' class='btn btn-floating waves-effect right delete salmon'>
+              <i class='material-icons'>delete</i>
+            </button>
+          </td>
         </tr>
 
         <!-- Dynamic rows -->
@@ -36,57 +60,102 @@
           <tr>
             <input type='hidden' name='id[]' value='{{id}}'>
             <td>
-              <select class='selectpicker' name='to[]'>
-                {{#select to}}
-                {{#each ../users}}
-                  <option value='{{this}}'>{{this}}</option>
-                {{/each}}
-                {{/select}}
-              </select>
+              <div class='input-field'>
+                <select class='selectpicker' name='to[]'>
+                  {{#select to}}
+                  {{#each ../users}}
+                    <option value='{{this}}'>{{this}}</option>
+                  {{/each}}
+                  {{/select}}
+                </select>
+              </div>
             </td>
             <td>
-              <select class='selectpicker' name='from[]'>
-                {{#select from}}
-                {{#each ../users}}
-                  <option value='{{this}}'>{{this}}</option>
-                {{/each}}
-                {{/select}}
-              </select>
+              <div class='input-field'>
+                <select class='selectpicker' name='from[]'>
+                  {{#select from}}
+                  {{#each ../users}}
+                    <option value='{{this}}'>{{this}}</option>
+                  {{/each}}
+                  {{/select}}
+                </select>
+              </div>
             </td>
-            <td><input class='form-control' type='text' name='amount[]' value='{{amount}}'></td>
-            <td><button type='button' class='btn btn-danger delete' data-id='{{id}}'>X</button></td>
+            <td>
+              <div class='input-field'>
+                <input type='text' class='validate' name='item[]' value='{{item}}'>
+              </div>
+            </td>
+            <td>
+              <div class='input-field'>
+                <input class='validate' type='number' step='0.05' name='amount[]' value='{{amount}}'>
+              </div>
+            </td>
+            <td>
+              <button type='button' class='btn btn-floating waves-effect right delete salmon' data-id='{{id}}'>
+                <i class='material-icons'>delete</i>
+              </button>
+            </td>
           </tr>
         {{/data}}
       </tbody>
     </table>
-    <input class='btn btn-primary' type='submit' name='Submit'>
-    <span class='pull-right'><button id='addRow' type='button' class='btn btn-primary'>+</button></span>
-  </form>
-</div>
 
-<!-- Divider -->
-<div class='col-lg-12 col-md-12 col-sm-12 col-xs-12'><br></div>
+    <!-- Submit and Add Buttons -->
+    <table>
+      <tr>
+        <td>
+          <input class='btn waves-effect indigo lighten-2' type='submit' value='Save'>
+          <span class='right'>
+            <button id='addRow' type='button' class='btn btn-floating waves-effect indigo lighten-2'>
+              <i class='material-icons'>add</i>
+            </button>
+          </span>
+        </td>
+      </tr>
+    </table>
+
+  </form>
+<!--</div>-->
+<div id='simple' class='col s12'>
+
+</div>
 
 <!-- Add / Delete Row Javascript -->
 <script type='text/javascript'>
-
   $(document).ready(function() {
     //Add row function
     $('#addRow').on('click', function() {
-      var copy = $('#template').html();
+      let copy = $('#template').html();
       $('tbody').append('<tr></tr>');
-      $('tr:last').html(copy);
-      $('tr:last').find('select').attr('class', 'selectpicker');
-      $('.selectpicker').selectpicker('refresh');
+      $('table.content tr:last').html(copy);
+
+      // activate the selectpickers
+      $('table.content tr:last').find('select')
+        .attr('class', 'selectpicker')
+        .material_select();
+
+      // bind deleteHandler to new delete button
+      $('table.content tr:last').find('button')
+        .on('click', deleteHandler);
     });
 
-    //Delete row function
-    $('.delete').on('click', function() {
-      var rowId = $(this).data('id');
-      console.log(rowId);
-    });
+    // bind delete handler to delete buttons
+    $('.delete').on('click', deleteHandler);
 
-    //Activate selectpickers
-    $('.selectpicker').selectpicker();
+    // delete handler
+    function deleteHandler() {
+      // add a hidden input with this ID
+      let rowId = $(this).data('id');
+      if (rowId !== undefined) {
+        $('form').append('<input type="hidden" name="delete[]" value="'+rowId+'"/>');
+      }
+
+      //Remove this row
+      $(this).parent().parent().remove();
+    }
+
+    // activate material selectpickers
+    $('.selectpicker').material_select()
   });
 </script>

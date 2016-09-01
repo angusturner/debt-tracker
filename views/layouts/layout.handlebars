@@ -3,28 +3,30 @@
   <head>
     <meta charset="utf-8">
     <title>Test App</title>
-    <link rel='stylesheet' href='/css/bootstrap.min.css' />
     <link rel='stylesheet' href='/css/style.css' />
-    <link rel='stylesheet' href='/css/bootstrap-select.css' />
+    <link rel='stylesheet' href='/css/materialize.min.css' />
     <script type='text/javascript' src='/js/jquery.min.js'></script>
-    <script type='text/javascript' src='/js/bootstrap.min.js'></script>
-    <script type='text/javascript' src='/js/bootstrap-select.min.js'></script>
+    <script type='text/javascript' src='/js/materialize.min.js'></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
   <body>
-    <div class="container">
-      <div class="header clearfix">
-        <nav>
-          <ul class="nav nav-pills pull-right">
-            <li role="presentation"><a href="/users/logout">Logout</a></li>
-          </ul>
-        </nav>
-        <h3 class="text-muted">Test App</h3>
-      </div>
+    <!-- Header -->
+    <header>
+      <nav class='top-nav indigo lighten-2'>
+        <div class='container'>
+          <div class='nav-wrapper'>
+            <a href="#" class="brand-logo left">Debt</a>
+          </div>
+        </div>
+      </nav>
+    </header>
 
-      <!-- Main Content -->
+    <!-- Main Content -->
+    <main>
       <div class='row'>
         <!-- Error messages from connect-flash -->
-        <div class="col-lg-12">
+        <div class="col s12">
           {{#if success_msg}}
             <div class='alert alert-success'>{{success_msg}}</div>
           {{/if}}
@@ -39,11 +41,13 @@
         <!-- Render the body -->
         {{{ body }}}
       </div>
+    </main>
 
-      <footer class="footer">
-        <p>© 2016 Test App, Inc.</p>
-      </footer>
-
-    </div>
+    <!-- Footer -->
+    <footer class="page-footer indigo lighten-2">
+      <div class='container'>
+        <p class='left white-text'>© 2016 Angus Turner</p>
+      </div>
+    </footer>
   </body>
 </html>

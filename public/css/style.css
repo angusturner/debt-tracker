@@ -1,8 +1,28 @@
 body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  padding: 0px;
 }
 
-a {
-  color: #00B7FF;
+main {
+  flex: 1 0 auto;
+}
+
+td {
+  padding: 0px 5px 0px 5px !important;
+}
+
+table {
+  padding: 0px 0px 0px 0px !important;
+  margin: 0px 0px 0px 0px !important;
+}
+
+footer.page-footer {
+  margin-top: 0px !important;
+  padding-top: 0px !important;
+}
+
+.salmon {
+  background-color: #ee6e73 !important;
 }

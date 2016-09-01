@@ -4,12 +4,10 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var mongo = require('mongodb');
 var mongoose = require('mongoose');
 var exphbs = require('express-handlebars');
 var flash = require('connect-flash');
 var session = require('express-session');
-
 
 //Database
 mongoose.connect('mongodb://localhost/debt');
@@ -37,12 +35,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-//Static redirects for jQuery and bootstrap
-app.use('/js', express.static(__dirname + '/node_modules/bootstrap/dist/js')); // redirect bootstrap JS
+//Static redirects for jQuery and materialize CSS
 app.use('/js', express.static(__dirname + '/node_modules/jquery/dist')); // redirect JS jQuery
-app.use('/css', express.static(__dirname + '/node_modules/bootstrap/dist/css')); // redirect CSS bootstrap
-app.use('/css', express.static(__dirname + '/node_modules/bootstrap-select/dist/css')); //bootstrap select css
-app.use('/js', express.static(__dirname + '/node_modules/bootstrap-select/dist/js')); //bootstrap-select js
+app.use('/js', express.static(__dirname + '/node_modules/materialize-css/dist/js')); // materialize
+app.use('/css', express.static(__dirname + '/node_modules/materialize-css/dist/css'));
+app.use('/fonts', express.static(__dirname + '/node_modules/materialize-css/dist/fonts'));
 
 //Routes
 app.use('/', routes);

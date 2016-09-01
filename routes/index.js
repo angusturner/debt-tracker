@@ -8,7 +8,7 @@ router.get('/', function(req, res, next) {
   Transaction.getAll(function(data) {
     res.render('index', {
       'data': data,
-      'users': ['angus', 'rhys', 'henry']
+      'users': ['A', 'R', 'H']
     });
   });
 });
@@ -17,20 +17,30 @@ router.get('/', function(req, res, next) {
 router.post('/', function(req, res) {
   //Fetch post variables
   var data = {};
-  ['id', 'to', 'from', 'amount'].forEach((val) => {
+  ['id', 'to', 'from', 'item', 'amount'].forEach((val) => {
       data[val] = req.body[val];
       data[val].shift(); //discard first entry (template row)
   });
 
-  //Create an array of 'upsert' promises
+  // create an array of 'upsert' promises
   var requests = data.id.map((val, i) => {
     return Transaction.upsert({
         id: val,
         to: data.to[i],
         from: data.from[i],
+        item: data.item[i],
         amount: data.amount[i]
     });
   });
+
+  // append the delete promises
+  var deletes = req.body['delete'];
+  if (deletes !== undefined) {
+    deletes.forEach((id) => {
+      requests.push(Transaction.delete(id));
+      return true;
+    });
+  }
 
   //Execute all updates/inserts, then render the page
   Promise.all(requests)
@@ -38,7 +48,7 @@ router.post('/', function(req, res) {
       Transaction.getAll((data) => {
         res.render('index', {
           'data': data,
-          'users': ['angus', 'rhys', 'henry']
+          'users': ['A', 'R', 'H']
         });
       });
     })
@@ -46,7 +56,7 @@ router.post('/', function(req, res) {
       Transaction.getAll((data) => {
         res.render('index', {
           'data': data,
-          'users': ['angus', 'rhys', 'henry'],
+          'users': ['A', 'R', 'H'],
           'error': err
         });
       });

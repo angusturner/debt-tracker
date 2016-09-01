@@ -13,6 +13,9 @@ var transactionSchema = mongoose.Schema({
   from: {
     type: String
   },
+  item: {
+    type: String
+  },
   amount: {
     type: Number
   },
@@ -60,6 +63,20 @@ Transaction.upsert = function(entry) {
     }
   });
 };
+
+/**
+ * Delete the supplied transaction id
+ * @param  {string} id ID to remove
+ * @return {Promise}
+ */
+Transaction.delete = function(id) {
+  return new Promise((resolve, reject) => {
+    let query = { '_id': id };
+    var result = Transaction.find({ '_id': id }).remove().exec()
+      .then(resolve)
+      .catch((err) => reject(err));
+  });
+}
 
 /**
  * Get all documents from transaction database
