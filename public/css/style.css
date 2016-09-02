@@ -13,7 +13,7 @@ td {
   padding: 0px 5px 0px 5px !important;
 }
 
-table {
+table.slim {
   padding: 0px 0px 0px 0px !important;
   margin: 0px 0px 0px 0px !important;
 }
@@ -25,4 +25,8 @@ footer.page-footer {
 
 .salmon {
   background-color: #ee6e73 !important;
+}
+
+.input-field {
+  margin-top: 0.5rem !important;
 }

@@ -1,16 +1,17 @@
-
+<!-- Navigation Tabs -->
 <ul class="tabs">
-  <li class="tab col s3"><a class='active' href="#log">Log</a></li>
-  <li class="tab col s3"><a href="#simple">Totals</a></li>
+  <li class="tab col s4"><a class='active' href="#log">Log</a></li>
+  <li class="tab col s4"><a href="#simple">Totals</a></li>
+  <li class="tab col s4"><a href="#users">Users</a></li>
 </ul>
 
-<!--<div id="log" class="col s12">-->
+<!-- Debt Log -->
 <form id='log' class='form' action='/' method='post'>
-    <table class='highlight content centered'>
+    <table class='highlight content centered slim'>
       <thead>
         <tr>
-          <th>To</th>
           <th>From</th>
+          <th>To</th>
           <th>Item</th>
           <th>$$</th>
           <th></th>
@@ -22,7 +23,7 @@
           <input type='hidden' name='id[]' value=''>
           <td>
             <div class='input-field'>
-              <select name='to[]'>
+              <select name='from[]'>
               {{#each users}}
                 <option value='{{this}}'>{{this}}</option>
               {{/each}}
@@ -31,7 +32,7 @@
           </td>
           <td>
             <div class='input-field'>
-              <select name='from[]'>
+              <select name='to[]'>
               {{#each users}}
                 <option value='{{this}}'>{{this}}</option>
               {{/each}}
@@ -56,13 +57,13 @@
         </tr>
 
         <!-- Dynamic rows -->
-        {{#data}}
+        {{#debts}}
           <tr>
             <input type='hidden' name='id[]' value='{{id}}'>
             <td>
               <div class='input-field'>
-                <select class='selectpicker' name='to[]'>
-                  {{#select to}}
+                <select class='selectpicker' name='from[]'>
+                  {{#select from}}
                   {{#each ../users}}
                     <option value='{{this}}'>{{this}}</option>
                   {{/each}}
@@ -72,8 +73,8 @@
             </td>
             <td>
               <div class='input-field'>
-                <select class='selectpicker' name='from[]'>
-                  {{#select from}}
+                <select class='selectpicker' name='to[]'>
+                  {{#select to}}
                   {{#each ../users}}
                     <option value='{{this}}'>{{this}}</option>
                   {{/each}}
@@ -97,12 +98,12 @@
               </button>
             </td>
           </tr>
-        {{/data}}
+        {{/debts}}
       </tbody>
     </table>
 
     <!-- Submit and Add Buttons -->
-    <table>
+    <table class='slim'>
       <tr>
         <td>
           <input class='btn waves-effect indigo lighten-2' type='submit' value='Save'>
@@ -115,30 +116,77 @@
       </tr>
     </table>
 
-  </form>
-<!--</div>-->
-<div id='simple' class='col s12'>
+</form>
 
-</div>
+
+<!-- Solution table -->
+<table id='simple' class='highlight bordered centered'>
+  <thead>
+    <tr>
+      <th>From</th>
+      <th>To</th>
+      <th>Amount ($)</th>
+      <th>Clear</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each solution}}
+    <tr>
+      <td class='from'>{{this.[0]}}</td>
+      <td class='to'>{{this.[1]}}</td>
+      <td class='amount'>{{this.[2]}}</td>
+      <td>
+        <div class='input-field' style='margin: 5px auto 5px auto;'>
+          <button class='btn btn-floating waves-effect indigo lighten-2 clear'>
+            <i class='material-icons'>done</i>
+          </button>
+        </div>
+      </td>
+    </tr>
+    {{else}}
+      <tr>
+        <td colspan="4">
+          <p>All balances are equal.</p>
+        </td>
+      </tr>
+    {{/each}}
+  </tbody>
+</table>
 
 <!-- Add / Delete Row Javascript -->
 <script type='text/javascript'>
   $(document).ready(function() {
-    //Add row function
-    $('#addRow').on('click', function() {
+    // bind addRow function to add row button
+    $('#addRow').on('click', () => { addRow() });
+
+    // add row function
+    function addRow(data) {
+      // copy the template row and insert at end of table
       let copy = $('#template').html();
       $('tbody').append('<tr></tr>');
       $('table.content tr:last').html(copy);
 
+      // select the final row
+      var lastRow = $('table.content tr:last');
+
+      // set initial values, if they were supplied
+      if (data !== undefined) {
+        for (var i in data) {
+          let selector = "[name='"+i+"[]']";
+          console.log(lastRow.find(selector));
+          lastRow.find(selector).val(data[i]);
+        }
+      }
+
       // activate the selectpickers
-      $('table.content tr:last').find('select')
+      lastRow.find('select')
         .attr('class', 'selectpicker')
         .material_select();
 
       // bind deleteHandler to new delete button
-      $('table.content tr:last').find('button')
+      lastRow.find('button')
         .on('click', deleteHandler);
-    });
+    }
 
     // bind delete handler to delete buttons
     $('.delete').on('click', deleteHandler);
@@ -157,5 +205,25 @@
 
     // activate material selectpickers
     $('.selectpicker').material_select()
+
+    // clear debt function
+    $('.clear').on('click', function() {
+      // retrieve row data
+      let row = $(this).parent().parent().parent();
+      let to = row.find('.to').html();
+      let from = row.find('.from').html();
+      let amount = row.find('.amount').html()*-1.0;
+
+      // add a row to the log table
+      addRow({
+        'from': from,
+        'to': to,
+        'amount': amount,
+        'item': '(clear)'
+      });
+
+      // submit the form
+      $('form').submit();
+    });
   });
 </script>
